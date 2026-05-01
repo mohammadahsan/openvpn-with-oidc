@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verinvo VPN Portal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f1117; color: #e1e4e8; min-height: 100vh; }
+        header { background: #161b22; border-bottom: 1px solid #30363d; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { font-size: 18px; font-weight: 600; color: #58a6ff; }
+        header .user { font-size: 14px; color: #8b949e; }
+        header a { color: #8b949e; text-decoration: none; margin-left: 16px; font-size: 13px; }
+        header a:hover { color: #e1e4e8; }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 24px; }
+        .greeting { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+        .subtitle { color: #8b949e; font-size: 14px; margin-bottom: 32px; }
+        .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px; }
+        @media (max-width: 600px) { .cards { grid-template-columns: 1fr; } }
+        .card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 24px; }
+        .card h2 { font-size: 14px; color: #8b949e; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .dot.green { background: #3fb950; box-shadow: 0 0 6px #3fb950; }
+        .dot.grey { background: #6e7681; }
+        .session-detail { font-size: 13px; color: #8b949e; margin-top: 8px; }
+        .session-detail span { color: #e1e4e8; }
+        .download-section { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 28px; margin-bottom: 32px; }
+        .download-section h2 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+        .download-section p { font-size: 14px; color: #8b949e; margin-bottom: 20px; }
+        .btn-download { display: inline-flex; align-items: center; gap: 8px; background: #238636; color: #fff; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 500; border: 1px solid #2ea043; transition: background 0.2s; }
+        .btn-download:hover { background: #2ea043; }
+        .instructions { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 28px; }
+        .instructions h2 { font-size: 16px; font-weight: 600; margin-bottom: 20px; }
+        .os-tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .os-tab { padding: 6px 16px; border-radius: 6px; border: 1px solid #30363d; background: transparent; color: #8b949e; cursor: pointer; font-size: 13px; transition: all 0.2s; }
+        .os-tab.active { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+        .os-content { display: none; }
+        .os-content.active { display: block; }
+        .step { display: flex; gap: 16px; margin-bottom: 16px; align-items: flex-start; }
+        .step-num { background: #1f6feb; color: #fff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+        .step-text { font-size: 14px; line-height: 1.6; }
+        .step-text code { background: #0d1117; border: 1px solid #30363d; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-family: 'SF Mono', monospace; }
+        a.link { color: #58a6ff; text-decoration: none; }
+        a.link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🔒 Verinvo VPN</h1>
+        <div>
+            <span class="user">{{ user.name }}</span>
+            <a href="/portal/logout">Logout</a>
+        </div>
+    </header>
+    <div class="container">
+        <div class="greeting">Welcome, {{ user.name.split()[0] }}</div>
+        <div class="subtitle">{{ user.email }} — VPN Self-Service Portal</div>
+        <div class="cards">
+            <div class="card">
+                <h2>Your Session</h2>
+                {% if session %}
+                    <div class="status-badge"><span class="dot green"></span> Connected</div>
+                    <div class="session-detail">VPN IP: <span>{{ session.vpn_ip }}</span></div>
+                    <div class="session-detail">Since: <span>{{ session.connected_since }}</span></div>
+                    <div class="session-detail">From: <span>{{ session.real_ip }}</span></div>
+                {% else %}
+                    <div class="status-badge"><span class="dot grey"></span> Not Connected</div>
+                    <div class="session-detail">No active VPN session found.</div>
+                {% endif %}
+            </div>
+            <div class="card">
+                <h2>Network Status</h2>
+                <div class="status-badge"><span class="dot green"></span> VPN Online</div>
+                <div class="session-detail">Active sessions: <span>{{ total_connected }}</span></div>
+                <div class="session-detail">Server: <span>vpn.verinvo.com</span></div>
+                <div class="session-detail">Protocol: <span>UDP 1194</span></div>
+            </div>
+        </div>
+        <div class="download-section">
+            <h2>📥 Download VPN Profile</h2>
+            <p>Download your <code>.ovpn</code> configuration file and import it into OpenVPN Connect. The same profile works on macOS, Windows, Linux, iOS, and Android.</p>
+            <a href="/portal/download" class="btn-download">⬇ Download verinvo-vpn.ovpn</a>
+        </div>
+        <div class="instructions">
+            <h2>📖 Setup Instructions</h2>
+            <div class="os-tabs">
+                <button class="os-tab active" onclick="showOS(event, 'mac')">macOS</button>
+                <button class="os-tab" onclick="showOS(event, 'windows')">Windows</button>
+                <button class="os-tab" onclick="showOS(event, 'linux')">Linux</button>
+                <button class="os-tab" onclick="showOS(event, 'ios')">iOS</button>
+                <button class="os-tab" onclick="showOS(event, 'android')">Android</button>
+            </div>
+            <div id="mac" class="os-content active">
+                <div class="step"><div class="step-num">1</div><div class="step-text">Download <a class="link" href="https://openvpn.net/client/" target="_blank">OpenVPN Connect</a> for macOS and install it.</div></div>
+                <div class="step"><div class="step-num">2</div><div class="step-text">Click <strong>Download verinvo-vpn.ovpn</strong> above.</div></div>
+                <div class="step"><div class="step-num">3</div><div class="step-text">Open OpenVPN Connect → click <strong>+</strong> → <strong>Upload File</strong> → select the <code>.ovpn</code> file.</div></div>
+                <div class="step"><div class="step-num">4</div><div class="step-text">Click <strong>Connect</strong>. A browser window opens — log in with your Oxinus account.</div></div>
+                <div class="step"><div class="step-num">5</div><div class="step-text">After login the browser closes and the VPN tunnel comes up automatically.</div></div>
+            </div>
+            <div id="windows" class="os-content">
+                <div class="step"><div class="step-num">1</div><div class="step-text">Download <a class="link" href="https://openvpn.net/client/" target="_blank">OpenVPN Connect</a> for Windows and install it.</div></div>
+                <div class="step"><div class="step-num">2</div><div class="step-text">Click <strong>Download verinvo-vpn.ovpn</strong> above.</div></div>
+                <div class="step"><div class="step-num">3</div><div class="step-text">Open OpenVPN Connect → click <strong>+</strong> → <strong>Upload File</strong> → select the <code>.ovpn</code> file.</div></div>
+                <div class="step"><div class="step-num">4</div><div class="step-text">Click <strong>Connect</strong>. A browser window opens — log in with your Oxinus account.</div></div>
+                <div class="step"><div class="step-num">5</div><div class="step-text">After login the VPN tunnel comes up automatically.</div></div>
+            </div>
+            <div id="linux" class="os-content">
+                <div class="step"><div class="step-num">1</div><div class="step-text">Install OpenVPN 3: <code>sudo apt install openvpn3</code></div></div>
+                <div class="step"><div class="step-num">2</div><div class="step-text">Download the profile from this page.</div></div>
+                <div class="step"><div class="step-num">3</div><div class="step-text">Connect: <code>openvpn3 session-start --config verinvo-vpn.ovpn</code></div></div>
+                <div class="step"><div class="step-num">4</div><div class="step-text">A browser URL is printed in the terminal — open it to complete Keycloak login.</div></div>
+            </div>
+            <div id="ios" class="os-content">
+                <div class="step"><div class="step-num">1</div><div class="step-text">Install <a class="link" href="https://apps.apple.com/app/openvpn-connect/id590379981" target="_blank">OpenVPN Connect</a> from the App Store.</div></div>
+                <div class="step"><div class="step-num">2</div><div class="step-text">Open this portal on your iPhone browser, download the <code>.ovpn</code> file, tap <strong>Open in OpenVPN</strong>.</div></div>
+                <div class="step"><div class="step-num">3</div><div class="step-text">Tap <strong>Connect</strong> — Safari opens for Keycloak login. Tunnel comes up after login.</div></div>
+            </div>
+            <div id="android" class="os-content">
+                <div class="step"><div class="step-num">1</div><div class="step-text">Install <a class="link" href="https://play.google.com/store/apps/details?id=net.openvpn.openvpn" target="_blank">OpenVPN Connect</a> from Google Play.</div></div>
+                <div class="step"><div class="step-num">2</div><div class="step-text">Download the <code>.ovpn</code> profile from this page and import it into OpenVPN Connect.</div></div>
+                <div class="step"><div class="step-num">3</div><div class="step-text">Tap <strong>Connect</strong> — a browser opens for Keycloak login. Tunnel comes up after login.</div></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function showOS(event, os) {
+            document.querySelectorAll('.os-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.os-tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(os).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
