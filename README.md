@@ -3,7 +3,9 @@
 > **Production-tested guide** — OpenVPN CE with Keycloak OIDC authentication via `openvpn-auth-oauth2`.  
 > No per-user certificates. Auth and authorisation fully delegated to Keycloak.  
 > Users authenticate via browser redirect (WebAuth flow) — supports MFA, FIDO2, etc.
-
+>
+> **Optional Portal** — A [self-service portal](portal/README.md) lets users download `.ovpn` profiles, view setup instructions, and check active VPN session status. Runs on the same VM via FastAPI.
+> ![1777624605601](image/README/1777624605601.png)
 ---
 
 ## Architecture
