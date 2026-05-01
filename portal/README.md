@@ -7,7 +7,7 @@
 >
 > Runs on the same VM as OpenVPN CE. Served under `https://vpn.example.com/portal`.
 
-![1777624451330](image/README/1777624451330.png)
+![1777624451330](../image/README/1777624451330.png)
 ---
 
 ## Architecture
