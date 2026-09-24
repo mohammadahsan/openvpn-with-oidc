@@ -13,7 +13,7 @@
 ```
 Client (OpenVPN Connect)
     │
-    │ UDP 1194 (tunnel)
+    │ UDP 443 (tunnel)
     ▼
 OpenVPN CE (server)
     │
@@ -37,7 +37,7 @@ Keycloak (id.ops.example.com/realms/myrealm)
 | OS | Debian 12 (Bookworm) |
 | Keycloak | Running and accessible, realm + client pre-created |
 | DNS | Domain pointing to the VPN server (e.g. `vpn.example.com`) |
-| Firewall | Ports 80, 443 (TCP) and 1194 (UDP) open |
+| Firewall | Ports 80, 443 (TCP and UDP) open |
 | Root access | Required throughout |
 
 ---
@@ -157,7 +157,7 @@ chmod 600 /etc/openvpn/server/management-password.txt
 
 ```bash
 cat > /etc/openvpn/server/server.conf <<'EOF'
-port 1194
+port 443
 proto udp
 dev tun
 
@@ -389,7 +389,7 @@ cat > /etc/openvpn/client.ovpn <<EOF
 client
 dev tun
 proto udp
-remote vpn.example.com 1194
+remote vpn.example.com 443
 resolv-retry infinite
 nobind
 persist-key
@@ -487,6 +487,27 @@ scp /etc/openvpn/client.ovpn user@their-machine:~/vpn.ovpn
 ---
 
 ## Troubleshooting
+
+### UDP port 1194 not working — Connection timeout
+
+If clients cannot connect using port 1194, switch to port 443 UDP:
+
+**Server side:**
+```bash
+# Update server.conf
+sed -i 's/^port 1194/port 443/' /etc/openvpn/server/server.conf
+systemctl restart openvpn-server@server
+```
+
+**Client side:**
+```bash
+# Update client.ovpn
+sed -i 's/remote vpn.example.com 1194/remote vpn.example.com 443/' client.ovpn
+```
+
+Port 443 is less likely to be blocked by restrictive firewalls.
+
+---
 
 ### Auth daemon fails to start — `oauth2.issuer is required`
 

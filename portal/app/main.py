@@ -126,5 +126,5 @@ async def download(request: Request):
     return FileResponse(
         OVPN_FILE,
         media_type="application/octet-stream",
-        filename="vpn-client.ovpn"
+        filename="client.ovpn"
     )

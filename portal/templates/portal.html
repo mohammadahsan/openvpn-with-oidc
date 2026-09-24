@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verinvo VPN Portal</title>
+    <title>VPN Portal</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f1117; color: #e1e4e8; min-height: 100vh; }
@@ -47,7 +47,7 @@
 </head>
 <body>
     <header>
-        <h1>🔒 Verinvo VPN</h1>
+        <h1>🔒 VPN Portal</h1>
         <div>
             <span class="user">{{ user.name }}</span>
             <a href="/portal/logout">Logout</a>
@@ -73,14 +73,13 @@
                 <h2>Network Status</h2>
                 <div class="status-badge"><span class="dot green"></span> VPN Online</div>
                 <div class="session-detail">Active sessions: <span>{{ total_connected }}</span></div>
-                <div class="session-detail">Server: <span>vpn.verinvo.com</span></div>
-                <div class="session-detail">Protocol: <span>UDP 1194</span></div>
+                <div class="session-detail">Protocol: <span>UDP 443</span></div>
             </div>
         </div>
         <div class="download-section">
             <h2>📥 Download VPN Profile</h2>
             <p>Download your <code>.ovpn</code> configuration file and import it into OpenVPN Connect. The same profile works on macOS, Windows, Linux, iOS, and Android.</p>
-            <a href="/portal/download" class="btn-download">⬇ Download verinvo-vpn.ovpn</a>
+            <a href="/portal/download" class="btn-download">⬇ Download client.ovpn</a>
         </div>
         <div class="instructions">
             <h2>📖 Setup Instructions</h2>
@@ -93,14 +92,14 @@
             </div>
             <div id="mac" class="os-content active">
                 <div class="step"><div class="step-num">1</div><div class="step-text">Download <a class="link" href="https://openvpn.net/client/" target="_blank">OpenVPN Connect</a> for macOS and install it.</div></div>
-                <div class="step"><div class="step-num">2</div><div class="step-text">Click <strong>Download verinvo-vpn.ovpn</strong> above.</div></div>
+                <div class="step"><div class="step-num">2</div><div class="step-text">Click <strong>Download client.ovpn</strong> above.</div></div>
                 <div class="step"><div class="step-num">3</div><div class="step-text">Open OpenVPN Connect → click <strong>+</strong> → <strong>Upload File</strong> → select the <code>.ovpn</code> file.</div></div>
                 <div class="step"><div class="step-num">4</div><div class="step-text">Click <strong>Connect</strong>. A browser window opens — log in with your Oxinus account.</div></div>
                 <div class="step"><div class="step-num">5</div><div class="step-text">After login the browser closes and the VPN tunnel comes up automatically.</div></div>
             </div>
             <div id="windows" class="os-content">
                 <div class="step"><div class="step-num">1</div><div class="step-text">Download <a class="link" href="https://openvpn.net/client/" target="_blank">OpenVPN Connect</a> for Windows and install it.</div></div>
-                <div class="step"><div class="step-num">2</div><div class="step-text">Click <strong>Download verinvo-vpn.ovpn</strong> above.</div></div>
+                <div class="step"><div class="step-num">2</div><div class="step-text">Click <strong>Download client.ovpn</strong> above.</div></div>
                 <div class="step"><div class="step-num">3</div><div class="step-text">Open OpenVPN Connect → click <strong>+</strong> → <strong>Upload File</strong> → select the <code>.ovpn</code> file.</div></div>
                 <div class="step"><div class="step-num">4</div><div class="step-text">Click <strong>Connect</strong>. A browser window opens — log in with your Oxinus account.</div></div>
                 <div class="step"><div class="step-num">5</div><div class="step-text">After login the VPN tunnel comes up automatically.</div></div>
@@ -108,7 +107,7 @@
             <div id="linux" class="os-content">
                 <div class="step"><div class="step-num">1</div><div class="step-text">Install OpenVPN 3: <code>sudo apt install openvpn3</code></div></div>
                 <div class="step"><div class="step-num">2</div><div class="step-text">Download the profile from this page.</div></div>
-                <div class="step"><div class="step-num">3</div><div class="step-text">Connect: <code>openvpn3 session-start --config verinvo-vpn.ovpn</code></div></div>
+                <div class="step"><div class="step-num">3</div><div class="step-text">Connect: <code>openvpn3 session-start --config client.ovpn</code></div></div>
                 <div class="step"><div class="step-num">4</div><div class="step-text">A browser URL is printed in the terminal — open it to complete Keycloak login.</div></div>
             </div>
             <div id="ios" class="os-content">
