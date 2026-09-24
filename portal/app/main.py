@@ -126,5 +126,6 @@ async def download(request: Request):
     return FileResponse(
         OVPN_FILE,
         media_type="application/octet-stream",
-        filename="client.ovpn"
+        filename="client.ovpn",
+        headers={"Cache-Control": "no-cache, no-store, must-revalidate"}
     )
